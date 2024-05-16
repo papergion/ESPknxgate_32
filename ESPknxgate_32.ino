@@ -4147,6 +4147,9 @@ if (sm_picprog == PICPROG_FREE)
       if ((uart == "tcp")  && (tcpuart == 0))
       {
         tcpuart = 1;
+#ifdef DEBUG 
+	    Serial.print("\r\ntcp uart accepted ");
+#endif
       }
 
       String ecommit = tcpJarg(tcpBuffer,"\"commit\"");
@@ -4397,6 +4400,9 @@ if (sm_picprog == PICPROG_FREE)
           s++;
         }
         tcpuart = 0;
+#ifdef DEBUG 
+	    Serial.print("\r\ntcp uart closed ");
+#endif
       }
     } // packetsize
   }   // udpopen == 1
@@ -4420,8 +4426,8 @@ if (sm_picprog == PICPROG_FREE)
     char lmax;
     char prefix = Serial2.read();        // receive from serial USB
 #ifdef DEBUG
-    manualInput(prefix);
-    prefix = 0;
+//    manualInput(prefix);
+//    prefix = 0;
 #endif
     if ((prefix > 0xF0) && (prefix < 0xF9)) // 0xf5 y aa bb cc dd
     {
@@ -4544,8 +4550,12 @@ if (sm_picprog == PICPROG_FREE)
 
 #ifdef USE_TCPSERVER
   else
-  if ((tcpuart == 1) && (tcpclient) && (tcpclient.connected())) 
+  if ((tcpuart == 1) && (replyLen > 0) && (tcpclient) && (tcpclient.connected())) 
   {
+#ifdef DEBUG 
+    Serial.print("\r\ntcp write ");
+    Serial.write(replyBuffer, replyLen);
+#endif
     tcpclient.write(replyBuffer, replyLen);
 //  tcpclient.flush(); 
   }
